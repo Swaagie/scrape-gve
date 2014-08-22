@@ -12,6 +12,7 @@ var env = process.env.NODE_ENV || 'development'
 // Run scraper every 2 minutes.
 //
 var job = setInterval(scraper.run, 120000);
+scraper.run();
 
 //
 // Start server to respond with JSON.
