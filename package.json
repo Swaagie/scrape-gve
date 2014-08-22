@@ -12,7 +12,8 @@
     "cheerio": "^0.17.0",
     "nodemailer": "^1.2.1",
     "request": "^2.40.0",
-    "restify": "^2.8.2"
+    "restify": "^2.8.2",
+    "xoauth2": "^0.1.8"
   },
   "subdomain": "swaagie-scrape-gve",
   "engines": {

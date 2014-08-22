@@ -4,6 +4,7 @@
 
 var request = require('request')
   , cheerio = require('cheerio')
+  , xoauth2 = require('xoauth2')
   , nodemailer = require('nodemailer')
   , fs = require('fs')
   , ratings = {
@@ -17,15 +18,15 @@ var request = require('request')
 // Setup mail transporter with oauth2.
 //
 var transporter = nodemailer.createTransport({
-    service: 'Gmail',
-    auth: {
+  service: 'Gmail',
+  auth: {
+    xoauth2: xoauth2.createXOAuth2Generator({
       user: process.env.EMAIL,
       clientId: process.env.CLIENT,
       clientSecret: process.env.SECRET,
-      refreshToken: process.env.REFRESH,
-      accessToken: process.env.ACCESS,
-      timeout: 3600
-    }
+      refreshToken: process.env.REFRESH
+    })
+  }
 });
 
 //
