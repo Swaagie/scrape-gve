@@ -1,0 +1,20 @@
+{
+  "name": "scrape-gve",
+  "version": "0.0.0-2",
+  "description": "Scraper geldvoorelkaar.nl",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Martijn Swaagman",
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^0.17.0",
+    "request": "^2.40.0",
+    "restify": "^2.8.2"
+  },
+  "subdomain": "swaagie-scrape-gve",
+  "engines": {
+    "node": "0.10.x"
+  }
+}
