@@ -20,7 +20,11 @@ var transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
       user: process.env.EMAIL,
-      pass: process.env.PASS
+      clientId: process.env.CLIENT,
+      clientSecret: process.env.SECRET,
+      refreshToken: process.env.REFRESH,
+      accessToken: process.env.ACCESS,
+      timeout: 3600
     }
 });
 
