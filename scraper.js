@@ -89,7 +89,7 @@ exports.run = function run() {
       var mail = {
         from: process.env.EMAIL,
         to: process.env.TO,
-        subject: 'Geldvoorelkaar project: ' + title,
+        subject: 'Geldvoorelkaar.nl project: ' + title,
         generateTextFromHTML: true,
         html: [
           'Project: '+ latest.title,
