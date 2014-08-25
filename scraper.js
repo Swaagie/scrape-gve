@@ -80,7 +80,7 @@ exports.run = function run() {
         classification: classification,
         rating: rating,
         interest: interest,
-        adjusted: Math.round(adjusted),
+        adjusted: Math.round(adjusted * 100) / 100,
         months: element.find('[id*="LooptijdLabel"]').text().trim().match(/\d+/)[0]
       };
 
@@ -93,12 +93,12 @@ exports.run = function run() {
         subject: 'Geldvoorelkaar.nl project: ' + title,
         generateTextFromHTML: true,
         html: [
-          '<a href=http://www.geldvoorelkaar.nl/"'+ link +'">Naar het project '+ title +'</a><br>',
+          '<a href="http://www.geldvoorelkaar.nl/'+ link +'">Naar het project '+ title +'</a><br>',
           'Project: '+ latest.title,
           'Classificatie: '+ latest.classification,
           'Graydon Rating: '+ latest.rating,
           'Rente: '+ latest.interest +'%',
-          'Rendement: '+ latest.adjusted,
+          'Rendement: '+ latest.adjusted +'%',
           'Looptijd: '+ latest.months
         ].join('<br>')
       };

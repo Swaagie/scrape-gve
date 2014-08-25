@@ -1,6 +1,6 @@
 {
   "name": "scrape-gve",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Scraper geldvoorelkaar.nl",
   "main": "index.js",
   "scripts": {
