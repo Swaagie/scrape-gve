@@ -50,7 +50,8 @@ exports.run = function run() {
     if (!data) return;
     data.each(function each(i, project) {
       var element = $(this)
-        , id = element.find('.button').attr('href').match(/\d+/)[0]
+        , link = element.find('.button').attr('href')
+        , id = link.match(/\d+/)[0]
         , classification = element.find('[id*="ClassificatieLabel"]').text().trim()
         , rating = element.find('[id*="GraydonRatingLabel"]').text().trim()
         , interest = parseFloat(element.find('[id*="RenteLabel"]').text().trim().slice(0, -1).replace(',', '.'))
@@ -92,6 +93,7 @@ exports.run = function run() {
         subject: 'Geldvoorelkaar.nl project: ' + title,
         generateTextFromHTML: true,
         html: [
+          '<a href=http://www.geldvoorelkaar.nl/"'+ link +'">Naar het project '+ title +'</a><br>',
           'Project: '+ latest.title,
           'Classificatie: '+ latest.classification,
           'Graydon Rating: '+ latest.rating,
