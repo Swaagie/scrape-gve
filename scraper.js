@@ -72,7 +72,7 @@ exports.run = function run() {
       // Highly speculative or not really profitable project.
       //
       adjusted = interest - 0.9 - 2.0 - ratings[rating];
-      if (classification === '5s' || adjusted < 2.5) return;
+      if (adjusted < 2.5) return;
 
       projects[id] = latest = {
         id: id,
