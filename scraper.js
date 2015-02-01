@@ -42,12 +42,14 @@ var projects = exports.projects = fs.existsSync(__dirname + '/results.json')
 exports.run = function run() {
   console.log('Starting scraper run:', (new Date).toString());
   request.get('http://www.geldvoorelkaar.nl/', function done(error, res, body) {
-    if (error || res.statusCode !== 200) return; // ignore errors
+    if (error || res.statusCode !== 200) return console.log(
+      'Request failed due to %s', error || 'status code ' + res.statusCode
+    );
 
     var $ = cheerio.load(body)
       , data = $('.startpaginaprojects .projectInfo');
 
-    if (!data) return;
+    if (!data) return console.log('Could not get data from body');
     data.each(function each(i, project) {
       var element = $(this)
         , link = element.find('.button').attr('href')
@@ -61,18 +63,18 @@ exports.run = function run() {
       //
       // Already found project do not process.
       //
-      if (id in projects) return;
+      if (id in projects) return console.log('Already found %s', title);
 
       //
       // Project Graydon rating below threshold.
       //
-      if (!~Object.keys(ratings).indexOf(rating)) return;
+      if (!~Object.keys(ratings).indexOf(rating)) return console.log('Low rating for %s', title);
 
       //
       // Highly speculative or not really profitable project.
       //
       adjusted = interest - 0.9 - 2.0 - ratings[rating];
-      if (adjusted < 2.5) return;
+      if (adjusted < 2.5) return console.log('Low interest for %s', title);
 
       projects[id] = latest = {
         id: id,
@@ -111,11 +113,9 @@ exports.run = function run() {
     });
 
     try {
-      fs.writeFile(__dirname + '/results.json', JSON.stringify(projects), function saved() {
-        console.log('Results written to results.json');
-      });
-    } catch(e) {
-      // ignore error
+      fs.writeFileSync(__dirname + '/results.json', JSON.stringify(projects));
+    } catch (error) {
+      console.log('Error writing file %', error.message);
     }
   });
 };
