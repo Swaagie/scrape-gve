@@ -47,7 +47,8 @@ exports.run = function run() {
     );
 
     var $ = cheerio.load(body)
-      , data = $('.startpaginaprojects .projectInfo');
+      , data = $('.startpaginaprojects .projectInfo')
+      , changed = false;
 
     if (!data) return console.log('Could not get data from body');
     data.each(function each(i, project) {
@@ -76,6 +77,7 @@ exports.run = function run() {
       adjusted = interest - 0.9 - 2.0 - ratings[rating];
       if (adjusted < 2.5) return console.log('Low interest for %s', title);
 
+      changed = true;
       projects[id] = latest = {
         id: id,
         title: title,
@@ -108,12 +110,14 @@ exports.run = function run() {
       transporter.sendMail(mail, function send(error, response) {
         if (error) return console.log(error);
         console.log('Mail send with new project:', title);
-        transporter.close();
       });
     });
 
+    if (!changed) return console.log('Nothing new was found, not writing to file cache');
+
     try {
       fs.writeFileSync(__dirname + '/results.json', JSON.stringify(projects));
+      console.log('Results written to file');
     } catch (error) {
       console.log('Error writing file %', error.message);
     }
