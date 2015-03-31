@@ -2,7 +2,7 @@
 
 'use strict';
 
-var superagent = require('superagent')
+var exec = require('child_process').exec
   , cheerio = require('cheerio')
   , xoauth2 = require('xoauth2')
   , nodemailer = require('nodemailer')
@@ -41,19 +41,18 @@ var projects = exports.projects = fs.existsSync(__dirname + '/results.json')
 //
 exports.run = function run() {
   console.log('Starting scraper run:', (new Date).toString());
-  superagent.get('https://geldvoorelkaar.nl/geldvoorelkaar/startpagina.aspx').end(function done(error, res) {
+  exec('curl -L https://geldvoorelkaar.nl/geldvoorelkaar/startpagina.aspx', function done(error, body) {
     if (error) return console.log(
       'Request failed due to %s', error.message
     );
 
-    if (res.statusCode >= 400) return console.log(
-      'Received error status code %d', res.statusCode
-    );
+    // if (res.statusCode >= 400) return console.log(
+    //   'Received error status code %d', res.statusCode
+    // );
 
-    console.log('Finished request with status code %d', res.statusCode);
+    console.log('Finished request');
 
-    var body = res.text
-      , $ = cheerio.load(body)
+    var $ = cheerio.load(body)
       , data = $('.startpaginaprojects .projectInfo');
 
     if (!data) return console.log('Could not get data from body');
