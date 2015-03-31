@@ -42,8 +42,14 @@ var projects = exports.projects = fs.existsSync(__dirname + '/results.json')
 exports.run = function run() {
   console.log('Starting scraper run:', (new Date).toString());
   request.get('http://www.geldvoorelkaar.nl/', function done(error, res, body) {
-    if (error || res.statusCode !== 200) return console.log(
-      'Request failed due to %s', error || 'status code ' + res.statusCode
+    console.log('Finished request with status code %d', res.statusCode);
+
+    if (error) return console.log(
+      'Request failed due to %s', error.message
+    );
+
+    if (res.statusCode >= 400) return console.log(
+      'Received error status code %d', res.statusCode
     );
 
     var $ = cheerio.load(body)
@@ -59,6 +65,8 @@ exports.run = function run() {
         , interest = parseFloat(element.find('[id*="RenteLabel"]').text().trim().slice(0, -1).replace(',', '.'))
         , title = element.find('[id*="ProjectNaamLabel"]').text().trim()
         , adjusted, latest;
+
+      console.log('Iterating over project %s', title);
 
       //
       // Already found project do not process.
@@ -76,6 +84,8 @@ exports.run = function run() {
       adjusted = interest - 0.9 - 2.0 - ratings[rating];
       if (adjusted < 2.5) return console.log('Low interest for %s', title);
 
+      console.log('Adding %s to projects with %s', title, id);
+
       projects[id] = latest = {
         id: id,
         title: title,
@@ -85,6 +95,8 @@ exports.run = function run() {
         adjusted: Math.round(adjusted * 100) / 100,
         months: element.find('[id*="LooptijdLabel"]').text().trim().match(/\d+/)[0]
       };
+
+      console.log('Setting up e-mail for %s', title);
 
       //
       // Mail newly found project.
@@ -112,6 +124,7 @@ exports.run = function run() {
         console.log('Error writing file %', error.message);
       }
 
+      console.log('Sending mail for project %s', latest.title);
       transporter.sendMail(mail, function send(error, response) {
         if (error) return console.log(error);
         console.log('Mail send with new project:', title);
