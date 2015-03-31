@@ -41,9 +41,7 @@ var projects = exports.projects = fs.existsSync(__dirname + '/results.json')
 //
 exports.run = function run() {
   console.log('Starting scraper run:', (new Date).toString());
-  request.get('http://www.geldvoorelkaar.nl/', function done(error, res, body) {
-    console.log('Finished request with status code %d', res.statusCode);
-
+  request.get('https://geldvoorelkaar.nl/geldvoorelkaar/startpagina.aspx', function done(error, res, body) {
     if (error) return console.log(
       'Request failed due to %s', error.message
     );
@@ -51,6 +49,8 @@ exports.run = function run() {
     if (res.statusCode >= 400) return console.log(
       'Received error status code %d', res.statusCode
     );
+
+    console.log('Finished request with status code %d', res.statusCode);
 
     var $ = cheerio.load(body)
       , data = $('.startpaginaprojects .projectInfo');
