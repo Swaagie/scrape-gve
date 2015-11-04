@@ -6,13 +6,7 @@ var exec = require('child_process').exec
   , cheerio = require('cheerio')
   , xoauth2 = require('xoauth2')
   , nodemailer = require('nodemailer')
-  , fs = require('fs')
-  , ratings = {
-      BBB: 1.24,
-      A: 0.62,
-      AA: 0.3,
-      AAA: 0.15
-    };
+  , fs = require('fs');
 
 //
 // Setup mail transporter with oauth2.
@@ -64,6 +58,7 @@ exports.run = function run() {
         , rating = element.find('[id*="GraydonRatingLabel"]').text().trim()
         , interest = parseFloat(element.find('[id*="RenteLabel"]').text().trim().slice(0, -1).replace(',', '.'))
         , title = element.find('[id*="ProjectNaamLabel"]').text().trim()
+        , credit = element.find('[id*="CreditSafeLabel"]').text().trim()
         , adjusted, latest;
 
       console.log('Iterating over project %s', title);
@@ -76,12 +71,12 @@ exports.run = function run() {
       //
       // Project Graydon rating below threshold.
       //
-      if (!~Object.keys(ratings).indexOf(rating)) return console.log('Low rating for %s', title);
+      if (+(rating.replace(',', '.')) > 2 || +credit < 50) return console.log('High default probability %s', title);
 
       //
       // Highly speculative or not really profitable project.
       //
-      adjusted = interest - 0.9 - 2.0 - ratings[rating];
+      adjusted = interest - 0.9 - 2.0;
       if (adjusted < 2.5) return console.log('Low interest for %s', title);
 
       console.log('Adding %s to projects with %s', title, id);
@@ -92,6 +87,7 @@ exports.run = function run() {
         classification: classification,
         rating: rating,
         interest: interest,
+        credit: credit,
         adjusted: Math.round(adjusted * 100) / 100,
         months: element.find('[id*="LooptijdLabel"]').text().trim().match(/\d+/)[0]
       };
@@ -110,7 +106,8 @@ exports.run = function run() {
           '<a href="http://www.geldvoorelkaar.nl/'+ link +'">Naar het project '+ title +'</a><br>',
           'Project: '+ latest.title,
           'Classificatie: '+ latest.classification,
-          'Graydon Rating: '+ latest.rating,
+          'Creditsafe:' + latest.credit,
+          'Graydon PD: '+ latest.rating + '%',
           'Rente: '+ latest.interest +'%',
           'Rendement: '+ latest.adjusted +'%',
           'Looptijd: '+ latest.months
