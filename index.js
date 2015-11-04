@@ -4,9 +4,8 @@ var restify = require('restify')
   , scraper = require('./scraper')
   , fs = require('fs');
 
-var env = process.env.NODE_ENV || 'development'
-  , server = restify.createServer()
-  , port = env === 'production' ? 80 : 8080;
+var server = restify.createServer()
+  , port = process.env.PORT || 8080;
 
 //
 // Run scraper every 2 minutes.
